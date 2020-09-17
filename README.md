@@ -5,7 +5,7 @@ I've made Tetris with it's original features. Rotating the shapes, clearing the 
 move left or right with the **LEFT** and **RIGHT** keys and rotating the shape pressing the **UP** key. You can also speed up the falling pressing the **DOWN** key.
 
 ## What I hope to implement
-Add the option to replay the game.
+Maybe music and some sound effects.
 
 ## Resources
 ### Modules

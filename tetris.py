@@ -1,7 +1,7 @@
 import pygame
 import random
 
-pygame.font.init()
+pygame.init()
 
 # Screen variables
 S_WIDTH = 800
@@ -24,6 +24,8 @@ YELLOW = (255, 255, 0)
 ORANGE = (255, 165, 0)
 CYAN = (0, 255, 255)
 PURPLE = (128, 0, 128)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 # Shapes
 S = [['.....',
@@ -142,7 +144,7 @@ class Shape():
 
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """
-    grid = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
+    grid = [[BLACK for _ in range(10)] for _ in range(20)]
 
     # If a shape is already locked on the grid
     for i in range(len(grid)):
@@ -152,6 +154,31 @@ def create_grid(locked_pos={}):
                 grid[i][j] = c
 
     return grid
+
+def draw_grid(surface, grid):
+    """ Draws the grid """
+    # Drawing the rectangles in the grid
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * 30, TOP_LEFT_Y + i * 30, BLOCK_SIZE, BLOCK_SIZE), 0)
+
+    # Drawing the border rectangle
+    pygame.draw.rect(surface, RED, (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 4)
+
+def draw_window(surface, grid):
+    """ Draws the window """
+    surface.fill(BLACK)
+
+    # Title
+    pygame.font.init()
+    font = pygame.font.SysFont("Arial", 60)
+    label = font.render("Tetris", 1, WHITE)
+
+    # Drawing the font
+    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 30))
+    draw_grid(surface, grid) # Drawing the grid
+
+    pygame.display.update()
 
 def get_shape():
     """ Returns a random shape """

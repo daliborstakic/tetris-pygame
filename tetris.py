@@ -28,6 +28,7 @@ CYAN = (0, 255, 255)
 PURPLE = (128, 0, 128)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+GRAY = (128, 128, 128)
 
 # Shapes
 S = [['.....',
@@ -159,13 +160,15 @@ def create_grid(locked_pos={}):
 
 def draw_grid(surface, grid):
     """ Draws the grid """
-    # Drawing the rectangles in the grid
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * 30, TOP_LEFT_Y + i * 30, BLOCK_SIZE, BLOCK_SIZE), 0)
 
-    # Drawing the border rectangle
-    pygame.draw.rect(surface, RED, (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 4)
+    # Start positions
+    st_x = TOP_LEFT_X
+    st_y = TOP_LEFT_Y
+
+    for i in range(len(grid)):
+        pygame.draw.line(surface, GRAY, (st_x, st_y + i * BLOCK_SIZE), (st_x + PLAY_WIDTH, st_y + i * BLOCK_SIZE))
+        for j in range(len(grid[i])):
+            pygame.draw.line(surface, GRAY, (st_x + j * BLOCK_SIZE, st_y) , (st_x + j * BLOCK_SIZE, st_y + PLAY_HEIGHT))
 
 def draw_window(surface, grid):
     """ Draws the window """
@@ -177,9 +180,19 @@ def draw_window(surface, grid):
     label = font.render("Tetris", 1, WHITE)
 
     # Drawing the font
-    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 30))
-    draw_grid(surface, grid) # Drawing the grid
+    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 20))
+    
+    # Drawing the rectangles in the grid
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * 30, TOP_LEFT_Y + i * 30, BLOCK_SIZE, BLOCK_SIZE), 0)
 
+    # Drawing the border rectangle
+    pygame.draw.rect(surface, RED, (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 4)
+
+    draw_grid(surface, grid)
+
+    # Updating display
     pygame.display.update()
 
 def get_shape():

@@ -337,7 +337,7 @@ def main(win):
         if level_time // 1000 > 5:
             level_time = 0
             if fall_speed > 0.12:
-                fall_speed -= 0.005
+                fall_speed -= 0.01  
 
         if fall_time // 1000 > fall_speed:
             fall_time = 0
@@ -397,8 +397,8 @@ def main(win):
             run = False
     
     display_middle_text("YOU LOST!")
-    pygame.time.delay(2000)
-    pygame.display.quit()
+    pygame.time.delay(1000)
+    pygame.quit()
 
 def main_menu(win):
     """ Title screen """

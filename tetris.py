@@ -291,6 +291,13 @@ def draw_window(surface, grid, score):
     # Draws the grid
     draw_grid(surface, grid)
 
+def display_middle_text(message):
+    font = pygame.font.SysFont('Arial', 60)
+    win.fill(BLACK)
+    text=font.render(message, 1, WHITE)
+    win.blit(text, ((S_WIDTH - text.get_width()) // 2, (S_HEIGHT - text.get_height()) // 2))
+    pygame.display.update()
+
 def get_shape():
     """ Returns a random shape """
     return Shape(5, 0, random.choice(shapes))
@@ -393,11 +400,7 @@ def main(win):
 
 def main_menu(win):
     """ Title screen """
-    font = pygame.font.SysFont('Arial', 60)
-    win.fill(BLACK)
-    start_text=font.render("Press any key to start...", 1, WHITE)
-    win.blit(start_text, ((S_WIDTH - start_text.get_width()) // 2, (S_HEIGHT - start_text.get_height()) // 2))
-    pygame.display.update()
+    display_middle_text("Press any key to start...")
 
     while True:
         for event in pygame.event.get():

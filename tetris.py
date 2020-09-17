@@ -152,3 +152,7 @@ def create_grid(locked_pos={}):
                 grid[i][j] = c
 
     return grid
+
+def get_shape():
+    """ Returns a random shape """
+    return random.choice(shapes)

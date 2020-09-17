@@ -217,6 +217,8 @@ def clear_row(grid, locked):
                 new_key = (x, y + inc)
                 locked[new_key] = locked.pop(key)
 
+    return inc
+
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """
     grid = [[BLACK for _ in range(10)] for _ in range(20)]
@@ -246,7 +248,7 @@ def draw_next_shape(shape, surface):
             if column == '0':
                 pygame.draw.rect(surface, shape.color, (st_x + j * BLOCK_SIZE, st_y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
 
-    surface.blit(label, (st_x, st_y - 20))
+    surface.blit(label, (st_x, st_y - 30))
 
 def draw_grid(surface, grid):
     """ Draws the grid """
@@ -260,7 +262,7 @@ def draw_grid(surface, grid):
         for j in range(len(grid[i])):
             pygame.draw.line(surface, GRAY, (st_x + j * BLOCK_SIZE, st_y) , (st_x + j * BLOCK_SIZE, st_y + PLAY_HEIGHT))
 
-def draw_window(surface, grid):
+def draw_window(surface, grid, score):
     """ Draws the window """
     surface.fill(BLACK)
 
@@ -268,6 +270,12 @@ def draw_window(surface, grid):
     pygame.font.init()
     font = pygame.font.SysFont("Arial", 60)
     label = font.render("Tetris", 1, WHITE)
+
+    # Score
+    score_font = pygame.font.SysFont('Arial', 30)
+    score_label = score_font.render(f"Score: {score}", 1, WHITE)
+
+    surface.blit(score_label, (20, 20))
 
     # Drawing the font
     surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH // 2 - (label.get_width() // 2), 20))
@@ -291,6 +299,9 @@ def main(win):
     """ The main function """
     locked_position = {}
 
+    # Score
+    score = 0
+
     # Creating the grid
     grid = create_grid(locked_position)
 
@@ -301,6 +312,7 @@ def main(win):
 
     fall_time = 0
     fall_speed = 0.27
+    level_time = 0
 
     # Running variables
     run = True
@@ -311,8 +323,14 @@ def main(win):
         grid = create_grid(locked_position)
 
         # Speed of the program
-        fall_time += clock.get_rawtime() 
+        fall_time += clock.get_rawtime()
+        level_time += clock.get_rawtime()
         clock.tick()
+
+        if level_time // 1000 > 5:
+            level_time = 0
+            if fall_speed > 0.12:
+                fall_speed -= 0.005
 
         if fall_time // 1000 > fall_speed:
             fall_time = 0
@@ -360,9 +378,9 @@ def main(win):
             current_shape = next_shape
             next_shape = get_shape()
             change_shape = False
-            clear_row(grid, locked_position)
+            score += clear_row(grid, locked_position) * 10
 
-        draw_window(win, grid)
+        draw_window(win, grid, score)
         draw_next_shape(next_shape, win)
 
         # Updating the display

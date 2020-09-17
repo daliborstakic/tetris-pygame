@@ -392,9 +392,22 @@ def main(win):
     pygame.display.quit()
 
 def main_menu(win):
-    main(win)
+    """ Title screen """
+    font = pygame.font.SysFont('Arial', 60)
+    win.fill(BLACK)
+    start_text=font.render("Press any key to start...", 1, WHITE)
+    win.blit(start_text, ((S_WIDTH - start_text.get_width()) // 2, (S_HEIGHT - start_text.get_height()) // 2))
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                main(win)
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
 win = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
 pygame.display.set_caption("Tetris")
 
-main_menu(win)
+if __name__ == '__main__':
+    main_menu(win)

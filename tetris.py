@@ -1,6 +1,8 @@
 import pygame
 import random
 
+from pygame.event import get
+
 pygame.init()
 
 # Screen variables
@@ -182,4 +184,54 @@ def draw_window(surface, grid):
 
 def get_shape():
     """ Returns a random shape """
-    return random.choice(shapes)
+    return Shape(5, 0, random.choice(shapes))
+
+def main(win):
+    """ The main function """
+    locked_position = {}
+
+    # Creating the grid
+    grid = create_grid(locked_position)
+
+    # Game variables
+    change_shape = False
+    current_shape = get_shape()
+    next_shape = get_shape()
+    fall_time = 0
+
+    # Running variables
+    run = True
+    clock = pygame.time.Clock
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    current_shape.x -= 1
+                    if not(valid_space(current_shape, grid)):
+                        current_shape += 1
+                if event.key == pygame.K_RIGHT:
+                    current_shape.x += 1
+                    if not(valid_space(current_shape, grid)):
+                        current_shape -= 1
+                if event.key == pygame.K_DOWN:
+                    current_shape += 1
+                    if not(valid_space(current_shape, grid)):
+                        current_shape -= 1
+                if event.key == pygame.K_UP:
+                    current_shape.rotation += 1
+                    if not(valid_space(current_shape, grid)):
+                        current_shape -= 1
+
+        draw_window(win, grid)
+
+def main_menu(win):
+    main(win)
+
+win = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
+pygame.display.set_caption("Tetris")
+
+main_menu(win)

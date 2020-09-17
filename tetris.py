@@ -1,8 +1,6 @@
 import pygame
 import random
 
-from pygame.event import get
-
 pygame.init()
 
 # Screen variables
@@ -144,6 +142,26 @@ class Shape():
         self.shape = shape
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0
+
+def convert_shape_format(shape):
+    """ Convert the shape string into actual rotations and positons """
+    positions = []
+
+    # Current shape format based on rotation
+    format = shape.shape[shape.rotation & len(shape.shape)] 
+
+    # For every string line
+    for i, line in enumerate(format):
+        row = list(line)
+        # For every element in row
+        for j, column in enumerate(row):
+            # If it's a zero, then it's a shape cell
+            if column == '0':
+                positions.append((shape.x + j, shape.y + i))
+
+    # For every shape position
+    for i, pos in enumerate(positions):
+        positions[i] = (pos[0] - 2, pos[1] - 4) # Offsetting the position because of the string
 
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """

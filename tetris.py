@@ -3,15 +3,27 @@ import random
 
 pygame.font.init()
 
-# Global variables
+# Screen variables
 S_WIDTH = 800
 S_HEIGHT = 700
+
+# Play window variables
 PLAY_WIDTH = 300
 PLAY_HEIGHT = 600 
-BLOCK_SIZE = 30
+BLOCK_SIZE = 30 # 300 / 10, 600 / 20
 
+# Top left corner of play window
 TOP_LEFT_X = (S_WIDTH - PLAY_WIDTH) // 2
 TOP_LEFT_Y = S_HEIGHT - PLAY_HEIGHT
+
+# Colors
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+ORANGE = (255, 165, 0)
+CYAN = (0, 255, 255)
+PURPLE = (128, 0, 128)
 
 # Shapes
 S = [['.....',
@@ -116,5 +128,6 @@ T = [['.....',
       '..0..',
       '.....']]
 
+# Possible shape combinations
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [GREEN, RED, CYAN, YELLOW, ORANGE, BLUE, PURPLE]

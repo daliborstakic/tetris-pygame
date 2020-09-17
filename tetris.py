@@ -163,6 +163,24 @@ def convert_shape_format(shape):
     for i, pos in enumerate(positions):
         positions[i] = (pos[0] - 2, pos[1] - 4) # Offsetting the position because of the string
 
+    return positions
+
+def valid_space(shape, grid):
+    """ If the space is free (valid) """
+
+    # What positions are valid
+    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == BLACK] for i in range(20)]
+    accepted_pos = [j for sub in accepted_pos for j in sub] # Flattens the list
+
+    formatted = convert_shape_format(shape)
+
+    for pos in formatted:
+        if pos not in accepted_pos:
+            if pos[1] > -1: # If it's above the screen
+                return False
+
+    return True
+
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """
     grid = [[BLACK for _ in range(10)] for _ in range(20)]

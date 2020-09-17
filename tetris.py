@@ -204,6 +204,24 @@ def create_grid(locked_pos={}):
 
     return grid
 
+def draw_next_shape(shape, surface):
+    """ Draws the upcoming shape at the side of the screen """
+    font = pygame.font.SysFont('Arial', 30)
+    label = font.render("Next shape", 1, WHITE)
+
+    st_x = TOP_LEFT_X + PLAY_WIDTH + 50
+    st_y = TOP_LEFT_Y + PLAY_HEIGHT // 2 - 100
+
+    format = shape.shape[shape.rotation % len(shape.shape)]
+
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (st_x + j * BLOCK_SIZE, st_y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
+
+    surface.blit(label, (st_x, st_y - 20))
+
 def draw_grid(surface, grid):
     """ Draws the grid """
 
@@ -236,10 +254,8 @@ def draw_window(surface, grid):
     # Drawing the border rectangle
     pygame.draw.rect(surface, RED, (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 4)
 
+    # Draws the grid
     draw_grid(surface, grid)
-
-    # Updating display
-    pygame.display.update()
 
 def get_shape():
     """ Returns a random shape """
@@ -320,6 +336,10 @@ def main(win):
             change_shape = False
 
         draw_window(win, grid)
+        draw_next_shape(next_shape, win)
+
+        # Updating the display
+        pygame.display.update()
 
         if check_lost(locked_position):
             run = False

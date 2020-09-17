@@ -1,8 +1,5 @@
-from typing import NewType
 import pygame
 import random
-
-from pygame.event import clear
 
 pygame.init()
 

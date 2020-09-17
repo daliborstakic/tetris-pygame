@@ -1,5 +1,8 @@
+from typing import NewType
 import pygame
 import random
+
+from pygame.event import clear
 
 pygame.init()
 
@@ -191,6 +194,29 @@ def check_lost(positions):
 
     return False
 
+def clear_row(grid, locked):
+    """ Clears a filled row """
+    inc = 0 
+    for i in range(len(grid) - 1, -1, -1):
+        row = grid[i]
+        if BLACK not in row: # if the row is filled 
+            inc += 1 # How many rows to shift
+            ind = i
+            for j in range(len(row)): # For every position in a row
+                try:
+                    del locked[(j, i)] # Delete the position
+                except:
+                    continue
+    
+    # If a row is cleared
+    if inc > 0:
+        # For a key in a list sorted by the y value
+        for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
+            x, y = key
+            if y < ind:
+                new_key = (x, y + inc)
+                locked[new_key] = locked.pop(key)
+
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """
     grid = [[BLACK for _ in range(10)] for _ in range(20)]
@@ -334,6 +360,7 @@ def main(win):
             current_shape = next_shape
             next_shape = get_shape()
             change_shape = False
+            clear_row(grid, locked_position)
 
         draw_window(win, grid)
         draw_next_shape(next_shape, win)

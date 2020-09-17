@@ -5,7 +5,7 @@ pygame.init()
 
 # Screen variables
 S_WIDTH = 800
-S_HEIGHT = 700
+S_HEIGHT = 750
 
 # Play window variables
 PLAY_WIDTH = 300
@@ -14,7 +14,7 @@ BLOCK_SIZE = 30 # 300 / 10, 600 / 20
 
 # Top left corner of play window
 TOP_LEFT_X = (S_WIDTH - PLAY_WIDTH) // 2
-TOP_LEFT_Y = S_HEIGHT - PLAY_HEIGHT
+TOP_LEFT_Y = S_HEIGHT - PLAY_HEIGHT - 50
 
 # Colors
 RED = (255, 0, 0)
@@ -148,7 +148,7 @@ def convert_shape_format(shape):
     positions = []
 
     # Current shape format based on rotation
-    format = shape.shape[shape.rotation & len(shape.shape)] 
+    format = shape.shape[shape.rotation % len(shape.shape)] 
 
     # For every string line
     for i, line in enumerate(format):
@@ -180,6 +180,16 @@ def valid_space(shape, grid):
                 return False
 
     return True
+
+def check_lost(positions):
+    """ If the shape is at the top of the screen """
+    for pos in positions:
+        x, y = pos
+
+        if y < 1:
+            return True
+
+    return False
 
 def create_grid(locked_pos={}):
     """ Initializes a grid which contains a color value """
@@ -216,7 +226,7 @@ def draw_window(surface, grid):
     label = font.render("Tetris", 1, WHITE)
 
     # Drawing the font
-    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 20))
+    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH // 2 - (label.get_width() // 2), 20))
     
     # Drawing the rectangles in the grid
     for i in range(len(grid)):
@@ -246,13 +256,30 @@ def main(win):
     change_shape = False
     current_shape = get_shape()
     next_shape = get_shape()
+
     fall_time = 0
+    fall_speed = 0.27
 
     # Running variables
     run = True
-    clock = pygame.time.Clock
+    clock = pygame.time.Clock()
 
     while run:
+        # Grid needs to be updated
+        grid = create_grid(locked_position)
+
+        # Speed of the program
+        fall_time += clock.get_rawtime() 
+        clock.tick()
+
+        if fall_time // 1000 > fall_speed:
+            fall_time = 0
+            current_shape.y += 1 # Moving the shape
+
+            if not(valid_space(current_shape, grid)) and current_shape.y > 0:
+                current_shape.y -= 1
+                change_shape = True # Locking the grid
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -261,21 +288,43 @@ def main(win):
                 if event.key == pygame.K_LEFT:
                     current_shape.x -= 1
                     if not(valid_space(current_shape, grid)):
-                        current_shape += 1
+                        current_shape.x += 1
                 if event.key == pygame.K_RIGHT:
                     current_shape.x += 1
                     if not(valid_space(current_shape, grid)):
-                        current_shape -= 1
+                        current_shape.x -= 1
                 if event.key == pygame.K_DOWN:
-                    current_shape += 1
+                    current_shape.y += 1
                     if not(valid_space(current_shape, grid)):
-                        current_shape -= 1
+                        current_shape.y -= 1
                 if event.key == pygame.K_UP:
                     current_shape.rotation += 1
                     if not(valid_space(current_shape, grid)):
-                        current_shape -= 1
+                        current_shape.rotation -= 1
+
+        shape_pos = convert_shape_format(current_shape)
+
+        # Drawing the shape colors
+        for i in range(len(shape_pos)):
+            x, y = shape_pos[i]
+            if y > -1:
+                grid[y][x] = current_shape.color
+
+        if change_shape:
+            for pos in shape_pos:
+                p = (pos[0], pos[1])
+                locked_position[p] = current_shape.color # Locking the position
+
+            current_shape = next_shape
+            next_shape = get_shape()
+            change_shape = False
 
         draw_window(win, grid)
+
+        if check_lost(locked_position):
+            run = False
+    
+    pygame.display.quit()
 
 def main_menu(win):
     main(win)

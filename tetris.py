@@ -349,7 +349,7 @@ def main(win):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -398,7 +398,7 @@ def main(win):
     
     display_middle_text("YOU LOST!")
     pygame.time.delay(1000)
-    pygame.quit()
+    main_menu(win)
 
 def main_menu(win):
     """ Title screen """
